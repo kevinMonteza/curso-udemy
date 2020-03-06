@@ -1,9 +1,9 @@
-require('./config/config');
 const express = require('express')
 
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose');
-const routesUsuario = require('../routes/usuario');
+const mongoose = require('mongoose')
+const path = require('path')
+require('dotenv').config()
 
 
 const app = express();
@@ -13,12 +13,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
  
 // parse application/json
 app.use(bodyParser.json())
-
+app.use( express.static( path.resolve( __dirname, './public' )))
+app.use( express.static( path.resolve( __dirname, './storage' )))
 //Rutas de usuario
-app.use(routesUsuario);
+app.use(require('./routes/index'));
 
-//mLab
-mongoose.connect('mongodb://localhost:27017/cafe', (err, res) =>{
+//mLab 
+mongoose.set('useNewUrlParser', true)
+mongoose.set('useFindAndModify', true)
+mongoose.set('useCreateIndex', true)
+mongoose.connect(process.env.URI_DB, (err, res) =>{
     if( err ) throw err;
     console.log("Base de datos ONLINE");
     
